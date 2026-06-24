@@ -39,6 +39,7 @@ use reth_ethereum::{
     tasks::Runtime,
     EthPrimitives,
 };
+use reth_evm_precompiles::{common::CustomPrecompile, poseidon::PoseidonPrecompile};
 use reth_tracing::{RethTracer, Tracer};
 use std::sync::OnceLock;
 
@@ -113,7 +114,18 @@ pub fn prague_custom() -> &'static Precompiles {
             address!("0x0000000000000000000000000000000000000999"),
             |_, _, _| Ok(PrecompileOutput::new(0, Bytes::new(), 0)),
         );
-        precompiles.extend([precompile]);
+        let poseidon_precompile = Precompile::new(
+            PoseidonPrecompile.name(),
+            address!("0x0000000000000000000000000000000000009999"),
+            |input, gas_limit, reservoir| {
+                Ok(PrecompileOutput::from_eth_result(
+                    PoseidonPrecompile.run(input, gas_limit, reservoir),
+                    reservoir,
+                ))
+            },
+        );
+
+        precompiles.extend([precompile, poseidon_precompile]);
         precompiles
     })
 }
