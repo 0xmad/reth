@@ -11,10 +11,9 @@
 //!
 //! The crate is organized around two main modules:
 //!
-//! - [`common`]: Core abstractions shared by all precompiles,
-//!   including the [`CustomPrecompile`] trait and execution interface.
-//! - [`poseidon`]: A Poseidon hash precompile implementation for
-//!   BN254 scalar field elements.
+//! - [`common`]: Core abstractions shared by all precompiles, including the [`CustomPrecompile`]
+//!   trait and execution interface.
+//! - [`poseidon`]: A Poseidon hash precompile implementation for BN254 scalar field elements.
 //!
 //! ## Precompile Model
 //!

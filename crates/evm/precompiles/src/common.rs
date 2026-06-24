@@ -26,19 +26,18 @@ use alloy_evm::revm::precompile::{EthPrecompileResult, PrecompileId};
 ///
 /// # Gas Semantics
 ///
-/// - [`required_gas`] should return the minimum amount of gas required
-///   to execute the precompile for the given input.
-/// - [`run`] receives the caller-provided `gas_limit`.
-///   Depending on the integration, implementations may be responsible
-///   for enforcing gas limits and returning an error when insufficient
-///   gas is supplied.
-/// - Implementations should return an appropriate error in the
-///   [`EthPrecompileResult`] if execution cannot be completed.
+/// - [`CustomPrecompile::required_gas`] should return the minimum amount of gas required to execute
+///   the precompile for the given input.
+/// - [`CustomPrecompile::run`] receives the caller-provided `gas_limit`. Depending on the
+///   integration, implementations may be responsible for enforcing gas limits and returning an
+///   error when insufficient gas is supplied.
+/// - Implementations should return an appropriate error in the [`EthPrecompileResult`] if execution
+///   cannot be completed.
 ///
 /// # Identity
 ///
 /// Each precompile must expose a unique [`PrecompileId`] through
-/// [`name`], which is used for registration and lookup.
+/// [`CustomPrecompile::name`], which is used for registration and lookup.
 pub trait CustomPrecompile {
     /// Returns the amount of gas required to execute this precompile
     /// for the provided input.
@@ -57,9 +56,8 @@ pub trait CustomPrecompile {
     ///
     /// * `input` - Raw calldata passed to the precompile.
     /// * `gas_limit` - Maximum gas available for execution.
-    /// * `reservoir` - Additional gas reservoir available to the
-    ///   precompile implementation. The exact semantics are
-    ///   implementation-specific.
+    /// * `reservoir` - Additional gas reservoir available to the precompile implementation. The
+    ///   exact semantics are implementation-specific.
     ///
     /// # Returns
     ///

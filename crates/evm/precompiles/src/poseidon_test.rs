@@ -24,10 +24,10 @@ const EXPECTED_HASHES: [&str; 12] = [
 fn test_required_gas() {
     let precompile = PoseidonPrecompile;
 
-    for index in 0..GAS_USED.len() {
+    for (index, gas) in GAS_USED.iter().enumerate() {
         let input = vec![0u8; (index + 1) * 32];
         let actual = precompile.required_gas(&input);
-        assert_eq!(actual, GAS_USED[index]);
+        assert_eq!(actual, *gas);
     }
 }
 

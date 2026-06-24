@@ -37,9 +37,8 @@ const PER_WORD_GAS: u64 = 5400;
 /// Computes a Poseidon hash over a sequence of BN254 field elements.
 ///
 /// # Example
-///
-/// use crate::poseidon::PoseidonPrecompile;
-/// use crate::common::CustomPrecompile;
+///```
+/// use reth_evm_precompiles::{common::CustomPrecompile, poseidon::PoseidonPrecompile};
 ///
 /// let precompile = PoseidonPrecompile;
 ///
@@ -48,6 +47,7 @@ const PER_WORD_GAS: u64 = 5400;
 ///
 /// let result = precompile.run(&input, gas_limit, 0);
 /// assert!(result.is_ok());
+/// ```
 ///
 /// # Input Format
 ///
@@ -62,8 +62,7 @@ const PER_WORD_GAS: u64 = 5400;
 ///
 /// - Input length must be a multiple of 32 bytes.
 /// - At most 12 field elements may be provided.
-/// - The Poseidon parameterization is selected based on the number of
-///   supplied field elements.
+/// - The Poseidon parameterization is selected based on the number of supplied field elements.
 ///
 /// # Gas Cost
 ///
@@ -106,7 +105,7 @@ impl CustomPrecompile for PoseidonPrecompile {
 
     /// See [`CustomPrecompile::run`].
     fn run(&self, input: &[u8], gas_limit: u64, _reservoir: u64) -> EthPrecompileResult {
-        if input.len() == 0 || input.len() % FIELD_SIZE != 0 {
+        if input.is_empty() || !input.len().is_multiple_of(FIELD_SIZE) {
             return Err(PrecompileHalt::other_static("Invalid length"));
         }
 
@@ -127,8 +126,9 @@ impl CustomPrecompile for PoseidonPrecompile {
 
         let chunks: Vec<&[u8]> = input.chunks(FIELD_SIZE).collect();
 
-        let hash =
-            poseidon.hash_bytes_be(&chunks).map_err(|err| PrecompileHalt::other(err.to_string()))?;
+        let hash = poseidon
+            .hash_bytes_be(&chunks)
+            .map_err(|err| PrecompileHalt::other(err.to_string()))?;
 
         Ok(EthPrecompileOutput::new(gas, hash.into()))
     }
